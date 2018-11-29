@@ -19,7 +19,6 @@ app.listen(3000, () => {
 
    //validate a user when he/ she provides his user id localhost:3000/validateUser?tagId=3
 app.get("/validateUser", function(req, res) {
-console.log("Called",req.query.harmonyId);
 var harmonyId= parseInt( req.query.harmonyId);
 MongoClient.connect(URL, function(err, db) {
     var dbo = db.db("USER_DB_FOR_MAKEATHON_3");
@@ -27,7 +26,6 @@ MongoClient.connect(URL, function(err, db) {
     if (err) throw err;
     dbo.collection("employees").findOne({"harmony_id": harmonyId}, function(err, result) {
         if (err) throw err;
-        console.log(result);
         if(result!=null){
             var cntxt = createContext(result);
             HARMONY_ID = harmonyId;
@@ -108,17 +106,31 @@ app.post('/applyLeave', function(req, resp) {
             }
             var myquery = { "emp_id": empId };
             var new_values = { $inc: { "leave_requests": 1, "leave_balance" :(- numberOfDays) } };
-            console.log('----------Going for employee updation-------------');
+            console.log('1. ----------Going for employee updation-------------');
             console.log("Query: ",myquery,new_values);
             dbo.collection("employees").updateOne(myquery, new_values, function(err, res) {
                 if (err) throw err;
-                console.log("1 document updated");
-                db.close();
-            console.log("collection updated!");
-            resp.send({
-                "status_code": 200,
-                "status_message": "Leave applied successfully"
-            });
+                console.log("2. Employee details updated");
+                dbo.collection("employees").findOne({"emp_id": empId}, function(error, result) {
+                    if (error) throw error;
+                    console.log(result);
+                    if(result!=null){
+                       // var cntxt = createContext(result);
+                        EMPLOYEE = result;
+                        console.log('3. Record found',EMPLOYEE);
+                        resp.send({
+                            "status_code": 200,
+                            "employee_detail": result,
+                            "status_message": "Leave applied successfully"
+                        });
+                    }
+                    else{
+                        resp.send({
+                            "status_code": 404,
+                            "status_message" : "Wrong input or invalid user"
+                        });
+                    }
+                    });
             db.close();
           });
 
