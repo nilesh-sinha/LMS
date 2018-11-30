@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
-
+const ObjectId = require('mongodb').ObjectID;
 //database server 
 const URL = "mongodb://localhost:27017/";
  var EMPLOYEE,HARMONY_ID;
@@ -12,6 +12,7 @@ const URL = "mongodb://localhost:27017/";
  app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
  app.use(cors());
 
+ var req_counter = 0;
 
 app.listen(3000, () => {
  console.log("Server running on port 3000");
@@ -174,6 +175,38 @@ app.post('/cancelLeave', function(req, resp) {
     });
 });
 });
+
+
+//Cancel Leave
+app.get("/cancelLeave",function(req, res){
+    console.log("1. Cancel module: ", req.query.id, typeof(req.query.id));
+    var reqId= req.query.id;
+    MongoClient.connect(URL, function(err, db) {
+        var dbo = db.db("USER_DB_FOR_MAKEATHON_3");
+        if (err) throw err;
+        var myquery = {"_id":ObjectId(reqId)};
+        var newvalues = { $set: { status: "Cancelled" } };
+        dbo.collection("leave_transactions").updateOne(myquery, newvalues, function(err, result) {
+            console.log("2. Res: ", result);
+            if (err){ 
+                res.send({
+                    "status_code": 404,
+                    "status_message" : "Seems like the servers are busy right now, please try after sometime."
+                });
+            }
+            else{
+                res.send({
+                    "status_code": 200,
+                    "status_message" : "Your leave request has been cancelled, thank you."
+                });
+            }
+            db.close();
+          });
+    }
+    );  
+});
+
+
 //Returning context for leave transaction data
 function  leaveContext(leaveDetail){
     var date = new Date();

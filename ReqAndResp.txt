@@ -1,0 +1,122 @@
+1. Get User(GET)
+Req:  URL: /validateUser?harmonyId=1233
+use 1231, 1232, 1233... 1238 as harmonyId
+
+
+Res: 
+
+{
+    "status_code": 200,
+    "employee_detail": {
+        "_id": "5c000e8263f71ae127c4bf9f",
+        "emp_id": 751062,
+        "harmony_id": 1233,
+        "emp_name": "Anubhab Mondal",
+        "phone_no": 8296282882,
+        "mail_id": "anubhab.mondal11@gmail.com",
+        "manager_name": "Manoj",
+        "leave_balance": 11,
+        "leave_requests": 4
+    },
+    "context": "The employee id 751062 belongs to Anubhab Mondal . You have a total of  11 leaves left. Your total leave balance is 11. You can avail a total of 11 leaves. You have 11 leaves remaining. Your pending leaves are 11. You can apply for 11 leaves if required. You have submitted 4 requests for approval. You have 4 leave requests pending for approval from your manager. You have applied for 4 leaves already. Your applied leaves are 4. Your manager is Manoj. "
+}
+
+-----------------------------------------------------------
+
+2. get leave details(GET)
+
+Req: /leaveDetail?id=<emp_id>
+Res: 
+
+{
+    "status_code": 200,
+    "leaveDetails": [
+        {
+            "_id": "5c002cb02b55181c588f8d7b",
+            "emp_id": 334452,
+            "request_date": "2018-11-29T18:15:12.329Z",
+            "number_of_days": 1,
+            "start_date": "2019-01-22T00:00:00.000Z",
+            "end_date": "2019-01-22T00:00:00.000Z",
+            "summary": "Personal work",
+            "status": "Cancelled"
+        },
+        {
+            "_id": "5c002c5dbdea581c422203b8",
+            "emp_id": 334452,
+            "request_date": "2018-11-29T18:13:49.061Z",
+            "number_of_days": 1,
+            "start_date": "2019-01-22T00:00:00.000Z",
+            "end_date": "2019-01-22T00:00:00.000Z",
+            "summary": "Personal work",
+            "status": "Requested"
+        },
+        {
+            "_id": "5c002898d4b1b11c113990da",
+            "emp_id": 334452,
+            "request_date": "2018-11-29T17:57:44.253Z",
+            "number_of_days": 1,
+            "start_date": "2019-01-22T00:00:00.000Z",
+            "end_date": "2019-01-22T00:00:00.000Z",
+            "summary": "Personal work",
+            "status": "Requested"
+        },
+        {
+            "_id": "5c002867d34ddb1c00124468",
+            "emp_id": 334452,
+            "request_date": "2018-11-29T17:56:55.442Z",
+            "number_of_days": 1,
+            "start_date": "2019-01-22T00:00:00.000Z",
+            "end_date": "2019-01-22T00:00:00.000Z",
+            "summary": "Personal work",
+            "status": "Requested"
+        }
+    ],
+    "context": "Your last leave request was submitted on Thu Nov 29 2018 23:45:12 GMT+0530 (IST). Your last leave application was for 1 days. Your upcoming leave is on Tue Jan 22 2019 05:30:00 GMT+0530 (IST)"
+}
+
+------------------------------------------------
+
+3. Apply leave(POST)
+
+Req: /applyLeave
+
+Request Body:
+{
+	"emp_id":334452,
+	"duration": "1",
+	"start_date" : "2019-01-22",
+	"end_date" : "2019-01-22"
+}
+
+Response:
+
+{
+    "status_code": 200,
+    "employee_detail": {
+        "_id": "5c000e8263f71ae127c4bfa3",
+        "emp_id": 334452,
+        "harmony_id": 1237,
+        "emp_name": "Hermione Granger",
+        "phone_no": 8296282882,
+        "mail_id": "hermoine.g@gmail.com",
+        "manager_name": "Manoj",
+        "leave_balance": 7,
+        "leave_requests": 8
+    },
+    "status_message": "Leave applied successfully"
+}
+
+
+4. Cancel Leave (GET)
+
+Req: cancelLeave?id=5c002cb02b55181c588f8d7b
+
+this id is the _id we're getting in leave details
+
+Res:
+
+{
+    "status_code": 200,
+    "status_message": "Your leave request has been cancelled, thank you."
+}
